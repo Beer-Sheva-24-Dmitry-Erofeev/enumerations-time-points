@@ -1,0 +1,64 @@
+package telran.time;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import org.junit.jupiter.api.Test;
+
+public class FutureProximityAdjusterTest {
+
+    // TimePoints sorted downwards
+    TimePoint minus_Ms_100 = new TimePoint(-100, TimeUnit.MILLISECOND);  // not in the array
+    TimePoint ms_60 = new TimePoint(60, TimeUnit.MILLISECOND);
+    TimePoint seconds_1 = new TimePoint(1, TimeUnit.SECOND);
+    TimePoint ms_1001 = new TimePoint(1001, TimeUnit.MILLISECOND);
+    TimePoint seconds_30 = new TimePoint(30, TimeUnit.SECOND);
+    TimePoint minutes_1 = new TimePoint(1, TimeUnit.MINUTE);
+    TimePoint seconds_90 = new TimePoint(90, TimeUnit.SECOND);
+    TimePoint minutes_5 = new TimePoint(5, TimeUnit.MINUTE);
+    TimePoint minutes_30 = new TimePoint(30, TimeUnit.MINUTE);
+    TimePoint hours_0_5 = new TimePoint(0.5f, TimeUnit.HOUR);
+    TimePoint minutes_45 = new TimePoint(45, TimeUnit.MINUTE);
+    TimePoint hours_0_75 = new TimePoint(0.75f, TimeUnit.HOUR);
+    TimePoint minutes_60 = new TimePoint(60, TimeUnit.MINUTE);
+    TimePoint hours_1 = new TimePoint(1, TimeUnit.HOUR);
+    TimePoint minutes_65 = new TimePoint(65, TimeUnit.MINUTE);
+    TimePoint hours_1_5 = new TimePoint(1.5f, TimeUnit.HOUR);
+    TimePoint hours_2 = new TimePoint(2, TimeUnit.HOUR);
+    TimePoint seconds_18_000 = new TimePoint(18_000, TimeUnit.SECOND); // 5 hours
+    TimePoint minutes_300 = new TimePoint(300, TimeUnit.MINUTE); // 5 hours
+    TimePoint hours_5 = new TimePoint(5, TimeUnit.HOUR);
+    TimePoint hours_6 = new TimePoint(6, TimeUnit.HOUR);
+
+    // Unsorted array of timePoints
+    TimePoint[] testTimePointsAxis = {hours_6, hours_1_5, hours_2, hours_1, hours_0_5, hours_0_75,
+        minutes_65, minutes_300, minutes_45, minutes_60, minutes_5, minutes_30, seconds_18_000,
+        minutes_1, seconds_30, seconds_90, hours_5, ms_1001, seconds_1, ms_60};
+
+    FutureProximityAdjuster futureProximityAdjuster = new FutureProximityAdjuster(testTimePointsAxis);
+
+    @Test
+    void futureProximityAdjusterTest() {
+
+        assertEquals(ms_60, futureProximityAdjuster.adjust(minus_Ms_100));
+        assertEquals(ms_1001, futureProximityAdjuster.adjust(seconds_1));
+        assertEquals(minutes_5, futureProximityAdjuster.adjust(seconds_90));
+        assertEquals(minutes_45, futureProximityAdjuster.adjust(minutes_30));
+
+        // Works without conversion
+        assertEquals(minutes_60, futureProximityAdjuster.adjust(hours_0_75));
+        assertEquals(hours_1, futureProximityAdjuster.adjust(hours_0_75));
+
+        assertEquals(minutes_65, futureProximityAdjuster.adjust(hours_1));
+
+        // Works without conversion
+        assertEquals(seconds_18_000, futureProximityAdjuster.adjust(hours_2));
+        assertEquals(minutes_300, futureProximityAdjuster.adjust(hours_2));
+        assertEquals(hours_5, futureProximityAdjuster.adjust(hours_2));
+
+        assertEquals(hours_6, futureProximityAdjuster.adjust(hours_5));
+
+        // Case of given timePoint being the most to the "right"
+        // on our axis, so it will throw an exeption
+        assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> futureProximityAdjuster.adjust(hours_6));
+    }
+}
