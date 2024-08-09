@@ -39,23 +39,24 @@ public class FutureProximityAdjusterTest {
     @Test
     void futureProximityAdjusterTest() {
 
-        assertEquals(ms_60, futureProximityAdjuster.adjust(minus_Ms_100));
-        assertEquals(ms_1001, futureProximityAdjuster.adjust(seconds_1));
-        assertEquals(minutes_5, futureProximityAdjuster.adjust(seconds_90));
-        assertEquals(minutes_45, futureProximityAdjuster.adjust(minutes_30));
+        assertEquals(ms_60, minus_Ms_100.with(futureProximityAdjuster));
+        assertEquals(ms_1001, seconds_1.with(futureProximityAdjuster));
+
+        assertEquals(minutes_5, seconds_90.with(futureProximityAdjuster));
+        assertEquals(minutes_45, minutes_30.with(futureProximityAdjuster));
 
         // Works without conversion
-        assertEquals(minutes_60, futureProximityAdjuster.adjust(hours_0_75));
-        assertEquals(hours_1, futureProximityAdjuster.adjust(hours_0_75));
+        assertEquals(minutes_60, hours_0_75.with(futureProximityAdjuster));
+        assertEquals(hours_1, hours_0_75.with(futureProximityAdjuster));
 
-        assertEquals(minutes_65, futureProximityAdjuster.adjust(hours_1));
+        assertEquals(minutes_65, hours_1.with(futureProximityAdjuster));
 
         // Works without conversion
-        assertEquals(seconds_18_000, futureProximityAdjuster.adjust(hours_2));
-        assertEquals(minutes_300, futureProximityAdjuster.adjust(hours_2));
-        assertEquals(hours_5, futureProximityAdjuster.adjust(hours_2));
+        assertEquals(seconds_18_000, hours_2.with(futureProximityAdjuster));
+        assertEquals(minutes_300, hours_2.with(futureProximityAdjuster));
+        assertEquals(hours_5, hours_2.with(futureProximityAdjuster));
 
-        assertEquals(hours_6, futureProximityAdjuster.adjust(hours_5));
+        assertEquals(hours_6, hours_5.with(futureProximityAdjuster));
 
         // Case of given timePoint being the most to the "right"
         // on our axis, so it will throw an exeption

@@ -38,7 +38,8 @@ public class FutureProximityAdjuster implements TimePointAdjuster {
             // should be first and we do this to get index 0 for it
             i = -i - 1;
         }
-
+        // In case of ArrayIndexOutOfBoundsException (i > timePoints.length)
+        // Should we return "null" or catch the exeption?
         return timePoints[i];
     }
 
