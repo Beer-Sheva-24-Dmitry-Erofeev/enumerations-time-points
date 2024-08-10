@@ -1,7 +1,6 @@
 package telran.time;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import org.junit.jupiter.api.Test;
 
 public class FutureProximityAdjusterTest {
@@ -39,9 +38,10 @@ public class FutureProximityAdjusterTest {
     @Test
     void futureProximityAdjusterTest() {
 
+        // Something not in the array and should be on index O
         assertEquals(ms_60, minus_Ms_100.with(futureProximityAdjuster));
-        assertEquals(ms_1001, seconds_1.with(futureProximityAdjuster));
 
+        assertEquals(ms_1001, seconds_1.with(futureProximityAdjuster));
         assertEquals(minutes_5, seconds_90.with(futureProximityAdjuster));
         assertEquals(minutes_45, minutes_30.with(futureProximityAdjuster));
 
@@ -57,9 +57,10 @@ public class FutureProximityAdjusterTest {
         assertEquals(hours_5, hours_2.with(futureProximityAdjuster));
 
         assertEquals(hours_6, hours_5.with(futureProximityAdjuster));
-
-        // Case of given timePoint being the most to the "right"
-        // on our axis, so it will throw an exeption
-        assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> futureProximityAdjuster.adjust(hours_6));
+        assertEquals(hours_6, minutes_300.with(futureProximityAdjuster));
+        assertEquals(hours_6, seconds_18_000.with(futureProximityAdjuster));
+        
+        // If potential ArrayIndexOutOfBoundsExeption it returns "null"
+        assertEquals(null, hours_6.with(futureProximityAdjuster));
     }
 }

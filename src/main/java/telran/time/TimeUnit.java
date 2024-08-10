@@ -23,7 +23,6 @@ public enum TimeUnit {
         float p2_inMs = p2.getAmount() * p2.getTimeUnit().valueOfMs;
         return (p2_inMs - p1_inMs) / this.valueOfMs;
         // p2 - p1 because our time axis is from left to right
-        // "this." is not nescessary here, it works without it.
-        // "return (p2_inMs - p1_inMs) / valueOfMs;" - works the same. Why?
+        // Actually "this." is not nescessary here, it's implied
     }
 }

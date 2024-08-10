@@ -23,24 +23,22 @@ public class FutureProximityAdjuster implements TimePointAdjuster {
     @Override
     public TimePoint adjust(TimePoint timePoint) {
         // Finding in "timePoints" nearest index to the value of "timePoint" using binarySearch
-        // It works because "TimePoint" implements "Comparable" (?)
+        // It works because "TimePoint" implements "Comparable"
         int i = Arrays.binarySearch(timePoints, timePoint);
         // If result of binarySerach is positive, we are moving to the "right"
         // on our axis if we have logically the same timePoints
-        if (i >= 0) {
-            while (timePoints[i].equals(timePoints[i + 1])) {
+        if (i >= 0 && i < timePoints.length - 1) {
+            while (timePoints[i].equals(timePoint)) {
                 i++;
             }
-            // One last shift to get a proper index in the "future"
-            i++;
         } else {
             // If result of binarySearch is -1, then the "timePoint"
             // should be first and we do this to get index 0 for it
             i = -i - 1;
         }
-        // In case of ArrayIndexOutOfBoundsException (i > timePoints.length)
-        // Should we return "null" or catch the exeption?
-        return timePoints[i];
+        // In case of ArrayIndexOutOfBoundsException
+        // (i > timePoints.length) we return "null"
+        return i < 0 ? null : timePoints[i];
     }
 
 }
